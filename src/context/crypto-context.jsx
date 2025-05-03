@@ -44,4 +44,4 @@ export function CryptoContextProvider({ children }) {
   );
 }
 
-export default createContext;
+export default CryptoContext;
