@@ -1,17 +1,27 @@
-import { Select, Space } from "antd";
+import {
+  Select,
+  Space,
+  Typography,
+  Flex,
+  Divider,
+  Form,
+  InputNumber,
+  Button,
+  DatePicker,
+} from "antd";
 import { useState } from "react";
+import { useCrypto } from "../context/crypto-context";
 
 export default function AddAssetForm() {
+  const { crypto } = useCrypto();
   const [coin, setCoin] = useState(null);
 
   if (!coin) {
     return (
       <Select
-        style={{ width: 200 }}
-        open={select}
-        onSelect={handleSelect}
-        onClick={() => setSelect((prev) => !prev)}
-        value="press / to open"
+        style={{ width: "100%" }}
+        onSelect={(v) => setCoin(crypto.find((c) => c.id === v))}
+        placeholder="Select Coin"
         options={crypto.map((coin) => ({
           label: coin.name,
           value: coin.id,
@@ -31,5 +41,64 @@ export default function AddAssetForm() {
     );
   }
 
-  return <form>FORM ASSET</form>;
+  function onFinish(values) {
+    console.log("finish", values);
+  }
+
+  return (
+    <Form
+      name="basic"
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 10 }}
+      style={{ maxWidth: 600 }}
+      initialValues={{}}
+      onFinish={onFinish}
+      autoComplete="off"
+    >
+      <Flex align="center">
+        <img
+          src={coin.icon}
+          alt={coin.name}
+          style={{ width: 40, marginRight: 20 }}
+        />
+        <Typography.Title level={2} style={{ margin: 0 }}>
+          {coin.name}
+        </Typography.Title>
+      </Flex>
+      <Divider variant="dotted" style={{ borderColor: "black" }} />
+
+      <Form.Item
+        label="Amount"
+        name="amount"
+        rules={[
+          {
+            required: true,
+            type: "number",
+            min: 0,
+            message: "Please input your username!",
+          },
+        ]}
+      >
+        <InputNumber style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item label="Price" name="price">
+        <InputNumber disabled style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item label="Date & Time " name="date">
+        <InputNumber style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item label="Total" name="total">
+        <DatePicker showTime />
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Add Asset
+        </Button>
+      </Form.Item>
+    </Form>
+  );
 }
