@@ -10,11 +10,11 @@ import {
   DatePicker,
   Result,
 } from "antd";
-import { useRef, useState } from "react";
+import { useState, useRef } from "react";
 import { useCrypto } from "../context/crypto-context";
 import CoinInfo from "./CoinInfo";
 
-const validateMessage = {
+const validateMessages = {
   required: "${label} is required!",
   types: {
     number: "${label} in not valid number",
@@ -26,7 +26,7 @@ const validateMessage = {
 
 export default function AddAssetForm({ onClose }) {
   const [form] = Form.useForm();
-  const { crypto } = useCrypto();
+  const { crypto, addAsset } = useCrypto();
   const [coin, setCoin] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const assetRef = useRef();
@@ -49,9 +49,11 @@ export default function AddAssetForm({ onClose }) {
   if (!coin) {
     return (
       <Select
-        style={{ width: "100%" }}
+        style={{
+          width: "100%",
+        }}
         onSelect={(v) => setCoin(crypto.find((c) => c.id === v))}
-        placeholder="Select Coin"
+        placeholder="Select coin"
         options={crypto.map((coin) => ({
           label: coin.name,
           value: coin.id,
@@ -60,9 +62,9 @@ export default function AddAssetForm({ onClose }) {
         optionRender={(option) => (
           <Space>
             <img
-              style={{ width: 30 }}
+              style={{ width: 20 }}
               src={option.data.icon}
-              alt={option.data.label}
+              atl={option.data.label}
             />{" "}
             {option.data.label}
           </Space>
@@ -80,6 +82,7 @@ export default function AddAssetForm({ onClose }) {
     };
     assetRef.current = newAsset;
     setSubmitted(true);
+    addAsset(newAsset);
   }
 
   function handleAmountChange(value) {
@@ -100,17 +103,23 @@ export default function AddAssetForm({ onClose }) {
     <Form
       form={form}
       name="basic"
-      labelCol={{ span: 5 }}
-      wrapperCol={{ span: 11 }}
-      style={{ maxWidth: 1000 }}
+      labelCol={{
+        span: 4,
+      }}
+      wrapperCol={{
+        span: 10,
+      }}
+      style={{
+        maxWidth: 600,
+      }}
       initialValues={{
-        price: coin.price.toFixed(2),
+        price: +coin.price.toFixed(2),
       }}
       onFinish={onFinish}
-      validateMessages={validateMessage}
+      validateMessages={validateMessages}
     >
       <CoinInfo coin={coin} />
-      <Divider variant="dotted" style={{ borderColor: "black" }} />
+      <Divider />
 
       <Form.Item
         label="Amount"
@@ -134,7 +143,7 @@ export default function AddAssetForm({ onClose }) {
         <InputNumber onChange={handlePriceChange} style={{ width: "100%" }} />
       </Form.Item>
 
-      <Form.Item label="Date & Time " name="date">
+      <Form.Item label="Date & Time" name="date">
         <DatePicker showTime />
       </Form.Item>
 

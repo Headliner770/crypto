@@ -11,7 +11,7 @@ const headerStyle = {
   padding: "1rem",
   display: "flex",
   justifyContent: "space-between",
-  alignItem: "center",
+  alignItems: "center",
 };
 
 export default function Appheader() {
